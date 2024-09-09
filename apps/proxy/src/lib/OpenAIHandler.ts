@@ -4,7 +4,12 @@ import { Response } from "express";
 import axios from "axios";
 
 export class OpenAIV1Handler {
-  constructor(private req: RequestWithPezzoClient, private res: Response) {}
+  private baseUrl: string;
+
+  constructor(private req: RequestWithPezzoClient, private res: Response) {
+    // 使用环境变量或默认值来设置 baseUrl
+    this.baseUrl = process.env.OPENAI_API_BASE_URL || "https://api.openai.com/v1";
+  }
 
   async handleRequest() {
     const method = this.req.method;
@@ -16,7 +21,7 @@ export class OpenAIV1Handler {
       try {
         const result = await axios({
           method,
-          url: `https://api.openai.com/v1/${url}`,
+          url: `${this.baseUrl}/${url}`,
           data: this.req.body,
           headers: {
             Authorization: headers.authorization,
